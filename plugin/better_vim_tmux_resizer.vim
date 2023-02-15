@@ -57,7 +57,15 @@ function! s:VimResize(direction)
     let l:window_resize_count = g:tmux_resizer_resize_count
   endif
 
-  execute l:command . ' ' . l:modifier . l:window_resize_count . '<CR>'
+  let l:command_ending = '<CR>'
+
+  let l:file_type = &ft
+  if (l:file_type == 'NvimTree')
+    let l:command = 'NvimTreeResize'
+    let l:command_ending = ''
+  endif
+
+  execute l:command . ' ' . l:modifier . l:window_resize_count . l:command_ending
 endfunction
 
 if empty($TMUX)
