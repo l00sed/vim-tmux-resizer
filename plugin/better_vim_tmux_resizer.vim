@@ -23,6 +23,11 @@ if !exists("g:tmux_resizer_no_mappings")
 endif
 
 function! s:VimResize(direction)
+  " Setup command ending constant
+  let l:command_ending = '<CR>'
+  " Get file_type as constant
+  let l:file_type = &ft
+
   " Prevent resizing Vim upward when there is only a single window
   if (a:direction == 'j' && winnr('$') <= 1)
     return
@@ -52,17 +57,14 @@ function! s:VimResize(direction)
   if (a:direction == 'h' || a:direction == 'l')
     let l:command = 'vertical resize'
     let l:window_resize_count = g:tmux_resizer_vertical_resize_count
+    " Handle NvimTree resizing
+    if (l:file_type == 'NvimTree')
+      let l:command = 'NvimTreeResize'
+      let l:command_ending = ''
+    endif
   else
     let l:command = 'resize'
     let l:window_resize_count = g:tmux_resizer_resize_count
-  endif
-
-  let l:command_ending = '<CR>'
-
-  let l:file_type = &ft
-  if (l:file_type == 'NvimTree')
-    let l:command = 'NvimTreeResize'
-    let l:command_ending = ''
   endif
 
   execute l:command . ' ' . l:modifier . l:window_resize_count . l:command_ending
